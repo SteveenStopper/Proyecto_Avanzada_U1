@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
-
+import Swal from 'sweetalert2';
 
 export function onlyNumbersValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -65,7 +65,7 @@ export class FormAdopcionComponent {
       address2: [''],
       postalCode: ['', onlyNumbersValidator()],
       civilStatus: ['', Validators.required],
-      phoneNumber: ['', [Validators.required, onlyNumbersValidator()]],
+      phoneNumber: new FormControl('',[Validators.required,Validators.maxLength(10),Validators.minLength(10), onlyNumbersValidator(), noRepeatedDigitsValidator()]),
       phoneNumber2: [''],
       email: ['', [Validators.required, Validators.email]],
       familyMembers: ['', Validators.required],
@@ -85,9 +85,9 @@ export class FormAdopcionComponent {
       previousPets: ['', Validators.required],
       previousPetsDetails: [{ value: '', disabled: true }],
       currentPets: ['', Validators.required],
-      currentPetDetails: [''],
-      petsNeutered: [''],
-      petsVaccinated: [''],
+      currentPetDetails: [{ value: '', disabled: true }],
+      petsNeutered: [{ value: '', disabled: true }],
+      petsVaccinated: [{ value: '', disabled: true }],
       financialAbility: ['', Validators.required],
       additionalInfo: ['', Validators.required]
     });
@@ -106,6 +106,10 @@ export class FormAdopcionComponent {
 
     this.adoptionForm.get('previousPets')?.valueChanges.subscribe(value => {
       this.updatepreviousPetsValidators(value);
+    });
+
+    this.adoptionForm.get('currentPets')?.valueChanges.subscribe(value => {
+      this.updateCurrentPetsValidators(value);
     });
   }
 
@@ -184,6 +188,41 @@ private updatepreviousPetsValidators(previousPets: string): void {
   }
 }
 
+private updateCurrentPetsValidators(currentPets: string): void {
+  const count = parseInt(currentPets, 10);
+  const currentPetDetailsControl = this.adoptionForm.get('currentPetDetails');
+  const petsNeuteredControl = this.adoptionForm.get('petsNeutered');
+  const petsVaccinatedControl = this.adoptionForm.get('petsVaccinated');
+
+  if (currentPetDetailsControl && petsNeuteredControl && petsVaccinatedControl) {
+    if (count > 0) {
+      currentPetDetailsControl.setValidators([Validators.required]);
+      petsNeuteredControl.setValidators([Validators.required]);
+      petsVaccinatedControl.setValidators([Validators.required]);
+
+      currentPetDetailsControl.enable();
+      petsNeuteredControl.enable();
+      petsVaccinatedControl.enable();
+    } else {
+      currentPetDetailsControl.clearValidators();
+      petsNeuteredControl.clearValidators();
+      petsVaccinatedControl.clearValidators();
+
+      currentPetDetailsControl.setValue('');
+      petsNeuteredControl.setValue('');
+      petsVaccinatedControl.setValue('');
+
+      currentPetDetailsControl.disable();
+      petsNeuteredControl.disable();
+      petsVaccinatedControl.disable();
+    }
+
+    currentPetDetailsControl.updateValueAndValidity();
+    petsNeuteredControl.updateValueAndValidity();
+    petsVaccinatedControl.updateValueAndValidity();
+  }
+}
+
   onDniKeyDown(event: KeyboardEvent) {
     const allowedKeys = [8, 9, 46];
     const keyCode = event.keyCode;
@@ -202,8 +241,25 @@ private updatepreviousPetsValidators(previousPets: string): void {
   onSubmit(event: Event): void {
     event.preventDefault();
     if (this.adoptionForm.valid) {
-      const datosFormulario = this.adoptionForm.value;
-      console.log(datosFormulario);
+      Swal.fire({
+        title: "Esta seguro?",
+        text: "Usted acepta que la información proporcionada es veraz y que la Asociación Una Sola Misión se reserva el derecho de aceptar o rechazar su solicitud de adopción.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Enviar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Éxito!",
+            text: "Su formulario se ha enviado con éxito.",
+            icon: "success"
+          });
+          this.adoptionForm.reset();
+        }
+      });
+      
     } else {
       console.log('Formulario inválido');
       this.adoptionForm.markAllAsTouched();

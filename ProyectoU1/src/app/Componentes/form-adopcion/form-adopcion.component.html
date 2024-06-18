@@ -44,7 +44,7 @@
                     <input type="date" formControlName="birthYear" class="form-control">
                 </p>
                 <div *ngIf="birthYearField?.errors && birthYearField?.touched">
-                    <small *ngIf="birthYearField?.hasError('required')">Es un campo requerido</small><br>
+                    <small *ngIf="birthYearField?.hasError('required')">Es un campo requerido</small>
                     <small *ngIf="birthYearField?.hasError('adultAge')"> Debe ser mayor de 18 años.</small>
                 </div>
                 <p>
@@ -73,14 +73,20 @@
                     <small *ngIf="adoptionForm.get('civilStatus')?.hasError('required')">Es un campo requerido</small>
                 </div>
                 <p>
-                    <label for="phoneNumber">Número de teléfono: <label style="color: red;">*</label></label><br>
+                    <label for="phoneNumber">Número de teléfono: <label style="color: red;">*</label></label>
                     <input type="text" formControlName="phoneNumber" class="form-control" inputmode="numeric" (keydown)="onDniKeyDown($event)"><br>
-                    <label>Número de teléfono alternativo</label><br>
+                </p>
+                <div style="margin-top: -4%;" *ngIf="phoneNumberField?.errors && phoneNumberField?.touched">
+                    <small *ngIf="phoneNumberField?.hasError('required')">Es un campo requerido</small><br>
+                    <small *ngIf="phoneNumberField?.hasError('minlength')">Debe contener minimo 10 numeros</small>
+                    <small *ngIf="phoneNumberField?.hasError('maxlength')">Debe contener máximo 10 numeros</small>
+                    <small *ngIf="phoneNumberField?.hasError('onlyNumbers')"> Por favor, ingrese solo numeros</small>
+                    <small *ngIf="phoneNumberField?.hasError('noRepeatedDigits')"> Por favor, no repita los numeros</small>
+                </div>
+                <p>
+                    <label style="margin-top: -4%;">Número de teléfono alternativo</label><br>
                     <input type="text" formControlName="phoneNumber2" class="form-control" inputmode="numeric" (keydown)="onDniKeyDown($event)">
                 </p>
-                <div *ngIf="adoptionForm.get('phoneNumber')?.errors && adoptionForm.get('phoneNumber')?.touched">
-                    <small *ngIf="adoptionForm.get('phoneNumber')?.hasError('required')">Es un campo requerido</small>
-                </div>
                 <p>
                     <label for="email" style="margin-top: 2%;">Correo electrónico: <label style="color: red;">*</label></label><br>
                     <input type="email" formControlName="email" placeholder="example@example.com" class="form-control">
@@ -134,7 +140,7 @@
                 </div>
                 <p>
                     <label for="workHours">¿Cuántas horas al día utiliza para su ocupación? <label style="color: red;">*</label></label><br>
-                    <input type="number" formControlName="workHours" class="form-control">
+                    <input type="text" formControlName="workHours" class="form-control" inputmode="numeric" (keydown)="onDniKeyDown($event)">
                 </p>
                 <div *ngIf="adoptionForm.get('workHours')?.errors && adoptionForm.get('workHours')?.touched">
                     <small *ngIf="adoptionForm.get('workHours')?.hasError('required')">Es un campo requerido</small>
@@ -249,16 +255,25 @@
                     <label for="currentPetDetails">Especifique especie, raza, edad y sexo de cada una:</label><br>
                     <input type="text" formControlName="currentPetDetails" class="form-control" placeholder="gato, persa, 3 años, hembra.">
                 </p>
+                <div *ngIf="adoptionForm.get('currentPetDetails')?.errors && adoptionForm.get('currentPetDetails')?.touched">
+                    <small *ngIf="adoptionForm.get('currentPetDetails')?.hasError('required')">Es un campo requerido</small>
+                </div>
                 <p>
                     <label>¿Sus mascotas están castradas/esterilizadas?</label><br>
                     <input type="radio" formControlName="petsNeutered" value="yes"> Sí <br>
                     <input type="radio" formControlName="petsNeutered" value="no"> No
                 </p>
+                <div *ngIf="adoptionForm.get('petsNeutered')?.errors && adoptionForm.get('petsNeutered')?.touched">
+                    <small *ngIf="adoptionForm.get('petsNeutered')?.hasError('required')">Es un campo requerido</small>
+                </div>
                 <p>
                     <label>¿Están sus mascotas al día en sus vacunas?</label><br>
                     <input type="radio" formControlName="petsVaccinated" value="yes"> Sí <br>
                     <input type="radio" formControlName="petsVaccinated" value="no"> No
                 </p>
+                <div *ngIf="adoptionForm.get('petsVaccinated')?.errors && adoptionForm.get('petsVaccinated')?.touched">
+                    <small *ngIf="adoptionForm.get('petsVaccinated')?.hasError('required')">Es un campo requerido</small>
+                </div>
                 <p>
                     <label for="financialAbility">¿Cuenta con los medios financieros para la manutención de un animal? (alimento, veterinario, peluquería, posibles emergencias…) <label style="color: red;">*</label></label><br>
                     <input type="text" formControlName="financialAbility" class="form-control">
