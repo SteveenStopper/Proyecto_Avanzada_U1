@@ -1,11 +1,12 @@
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css";
 
 .form-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
 
     img {
-        width: 50%;
+        width: 38%;
         height: auto;
         border-radius: 8px;
         margin-bottom: 20px;

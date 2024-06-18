@@ -77,13 +77,13 @@ export class FormAdopcionComponent {
       vacations: ['', Validators.required],
       houseType: ['', Validators.required],
       houseOwner: ['', Validators.required],
-      housePermission: [''],
+      housePermission: [{ value: '', disabled: true }],
       yard: ['', Validators.required],
-      fence: [''],
+      fence: [{ value: '', disabled: true }],
       petType: ['', Validators.required],
       reason: ['', Validators.required],
       previousPets: ['', Validators.required],
-      previousPetsDetails: [''],
+      previousPetsDetails: [{ value: '', disabled: true }],
       currentPets: ['', Validators.required],
       currentPetDetails: [''],
       petsNeutered: [''],
@@ -94,6 +94,18 @@ export class FormAdopcionComponent {
 
     this.adoptionForm.get('children')?.valueChanges.subscribe(value => {
       this.updateValidators(value);
+    });
+
+    this.adoptionForm.get('houseOwner')?.valueChanges.subscribe(value => {
+      this.updateHouseOwnerValidators(value);
+    });
+
+    this.adoptionForm.get('yard')?.valueChanges.subscribe(value => {
+      this.updateyardValidators(value);
+    });
+
+    this.adoptionForm.get('previousPets')?.valueChanges.subscribe(value => {
+      this.updatepreviousPetsValidators(value);
     });
   }
 
@@ -121,6 +133,56 @@ export class FormAdopcionComponent {
     }
 }
 
+private updateHouseOwnerValidators(houseOwner: string): void {
+  const housePermissionControl = this.adoptionForm.get('housePermission');
+
+  if (housePermissionControl) {
+    if (houseOwner === 'No') {
+      housePermissionControl.setValidators([Validators.required]);
+      housePermissionControl.enable();
+    } else {
+      housePermissionControl.clearValidators();
+      housePermissionControl.setValue('');
+      housePermissionControl.disable();
+    }
+
+    housePermissionControl.updateValueAndValidity();
+  }
+}
+
+private updateyardValidators(yard: string): void {
+  const yardControl = this.adoptionForm.get('fence');
+
+  if (yardControl) {
+    if (yard === 'Sí') {
+      yardControl.setValidators([Validators.required]);
+      yardControl.enable();
+    } else {
+      yardControl.clearValidators();
+      yardControl.setValue('');
+      yardControl.disable();
+    }
+
+    yardControl.updateValueAndValidity();
+  }
+}
+
+private updatepreviousPetsValidators(previousPets: string): void {
+  const previousPetsControl = this.adoptionForm.get('previousPetsDetails');
+
+  if (previousPetsControl) {
+    if (previousPets === 'Sí') {
+      previousPetsControl.setValidators([Validators.required]);
+      previousPetsControl.enable();
+    } else {
+      previousPetsControl.clearValidators();
+      previousPetsControl.setValue('');
+      previousPetsControl.disable();
+    }
+
+    previousPetsControl.updateValueAndValidity();
+  }
+}
 
   onDniKeyDown(event: KeyboardEvent) {
     const allowedKeys = [8, 9, 46];
